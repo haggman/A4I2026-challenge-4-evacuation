@@ -435,7 +435,7 @@ attached: *"Use of this tool and data signifies your agreement to use it for the
 and to make no attempt to identify any individual in this data."* The specified purpose is emergency
 preparedness. That is what you are doing. Do not use it for anything else.
 
-### Five defects you will meet, and why we show them to you
+### Six defects you will meet, and why we show them to you
 
 The notebook does not hand you a cleaned table, because these are the teaching:
 
@@ -449,6 +449,16 @@ The notebook does not hand you a cleaned table, because these are the teaching:
    filter returning zero looks exactly like a feature that does not exist.
 5. **Census tract boundaries changed in 2020.** The BigQuery geometry table is 2010 vintage;
    everything else is 2020. Anchoring on the wrong one silently discards a fifth of the state.
+6. **A handful of shelters record impossible capacities.** Georgia publishes two above 100,000
+   spaces and California one—more than the largest stadium in the country. They are four rows in
+   nine thousand, and they will quietly inflate any state total you put on a slide. The notebook
+   flags them and prints them rather than dropping them, because the number is FEMA's and it is
+   not our place to silently overwrite it.
+
+**This is why the notebook's validation section has three verdicts, not two.** A **FAIL** means our
+load is broken and you should stop. A **WARN** means the source data is untidy right there, and the
+offending rows are printed underneath so you can look at them. Do look at them—defect 6 shows up as
+a WARN, and it is the kind of thing that ends up on a slide.
 
 ### What we deliberately left out
 
