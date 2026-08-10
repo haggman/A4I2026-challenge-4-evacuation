@@ -12,7 +12,36 @@ Last updated: 2026-08-09, end of Stage 1.
 | **Differentiator** | Grounding with Google Maps *(under review — see below)* |
 | **Stage 1 — data research** | **CLOSED 2026-08-09.** `_shared/research/datasets-challenge-4.md` |
 | **Stage 2 — load notebook** | **DONE and verified 2026-08-09.** `notebooks/c4_01_load_explore.ipynb` — 58 cells, **20/20 checks in 78 seconds** in a fresh Skills project |
-| **Stage 3 — repo** | Next. `load.sh`, publish notebook, README, `JUDGING.md` section, maintainer differentiator run |
+| **Stage 3 — repo** | **Written 2026-08-09.** README, `load.sh`, publish notebook, both placeholder READMEs, `.gitignore`, `.gitattributes`, and the `JUDGING.md` section. Four items outstanding — see the checklist |
+
+## Stage 3 checklist
+
+- [x] Notebook runs clean in a fresh Skills project; diagnostic block captured — **20/20, 78s**
+- [ ] **Differentiator run end to end by a maintainer against the shipped tables.**
+      `_shared/research/c4_maintainer_agent.py` is written and not yet run. It answers the two
+      things the judging guide currently cannot: how much of FEMA's registry still checks out
+      against Google Maps, and whether Maps agrees with FEMA about a named shelter
+- [ ] `bash scripts/load.sh FL` tested in a fresh project, **including a re-run** — the second run
+      takes the other branch and is the one that finds things
+- [ ] Snapshot published to GCS and verified readable (`c4_90_publish_snapshot.ipynb`, 8 states)
+- [ ] Repo pushed to GitHub
+- [ ] **"Template repository" ticked** in Settings, or the green button the README tells teams to
+      click does not exist
+- [ ] **Repo is Public**, or raw-URL notebook import fails
+- [x] Per-challenge section written in `_shared/JUDGING.md`
+- [x] `BRIEF.md` differentiator table status updated
+
+## Two deviations from the house pattern, both deliberate
+
+**No tracks.** Challenges 1–3 kept Paul's choose-your-own-adventure tables. This one cannot: FEMA's
+shelter file and NRI's hurricane and coastal-flood fields carry flood well, wildfire is thinner, and
+the industrial layer (EPA RMP) died with HIFLD in 2025. **The state is the differentiation device
+instead**, with real per-state numbers on the card. Google has read a three-track version, so this
+is a question we will be asked.
+
+**Renamed.** "Adaptive Emergency Evacuation & Vulnerable Community Dispatch" became "Adaptive
+Evacuation Readiness & Vulnerable Community Planning", because the differentiator's own terms
+prohibit emergency-response use and the model enforces it at runtime.
 | **Probe runs** | `c4_probe.py` … `c4_probe6.py` — **all six run in Skills, all findings recorded** |
 
 ## The headline finding
