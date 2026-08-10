@@ -24,7 +24,7 @@ After the notebook or `load.sh` runs, in `<your-project>.evacuation_readiness`:
 
 ## If you add your own data
 
-You may, and it earns credit—but the licence rules on the challenge card apply to anything you
+You may, and it earns credit—but the license rules on the challenge card apply to anything you
 bring, and they are not a formality. A winning project gets promoted publicly, so an unchecked
 share-alike or non-commercial source becomes somebody else's legal problem.
 

@@ -43,7 +43,7 @@ what each of you needs in the first fifteen minutes.
 | If you are… | Read now | Come back for |
 |---|---|---|
 | **Everyone, together** | [The four things](#the-four-things-youre-working-with) · [What you're building](#what-youre-building) · [Pick your state](#now-pick-your-state) | — |
-| **Team lead** | [Step 0](#step-0organise-your-team) · [How you'll be judged](#how-youll-be-judged) | [Going further](#going-further)—read it *before* you write code, not before you demo |
+| **Team lead** | [Step 0](#step-0organize-your-team) · [How you'll be judged](#how-youll-be-judged) | [Going further](#going-further)—read it *before* you write code, not before you demo |
 | **Data lane** | [Step 4, load the data](#step-4load-the-data) · [What you'll have](#what-youll-have) | [The data, and why we chose it](#the-data-and-why-we-chose-it) · Section 12 of the notebook |
 | **Agent lane** | [What you're building](#what-youre-building) · [The technology](#the-technology-youll-use) | [`agent/README.md`](agent/) · [Reference](#reference) |
 | **Front end lane** | [Front end lane](#front-end-lane2-people) | [Your output artifact](#your-output-artifact-the-readiness-brief) · the attribution rules, which shape your UI |
@@ -130,7 +130,7 @@ and having a judge find it reads as the opposite.
 | *"Where are the mobile home parks?"* | The national layer was decommissioned in 2025. We load ACS mobile-home counts per tract—density, not locations |
 | *"Which specific people need help?"* | Nothing. Individual-level data is prohibited at this event, and rightly. This is a line, not an obstacle |
 | *"Is this shelter open right now, during the storm?"* | FEMA's own file says in capitals that it must not be used for operational status. Live county feeds—which are empty in October, when you are planning |
-| *"How many people in this tract use a wheelchair?"* | Nothing better exists publicly. CDC PLACES gives modelled prevalence, not counts—use it and say it is modelled |
+| *"How many people in this tract use a wheelchair?"* | Nothing better exists publicly. CDC PLACES gives modeled prevalence, not counts—use it and say it is modeled |
 | *"Can a person in a wheelchair actually get into this building?"* | For two thirds of shelters, **somebody has to go and ask.** See [the add-on we'd build](#the-add-on-wed-build-if-we-had-another-four-hours) |
 
 ---
@@ -141,6 +141,13 @@ Evacuation is run by states and counties, not by metro areas, so this challenge 
 state. Change one line at the top of the notebook and everything follows.
 
 **You do not have to pick the state you are sitting in.** Pick the one that makes your story.
+
+**And the state is not the only thing that is yours to choose.** This challenge names one user—a
+county emergency manager planning before a season—but that is a suggestion, not a cage. A
+different user with the same data is a legitimate move: a hospital planning patient transfer, a
+utility deciding which substations to harden, a nonprofit deciding where to pre-position
+supplies. **If you can see a readiness problem in the same vein that ours misses, take it.** Just
+be ready to say why yours is worth solving.
 
 These come from the run that produced the snapshots in Cloud Storage, so you are choosing with your
 eyes open. **Read the "unrecorded" column, not the "yes" column.** "Wheelchair YES" is the count
@@ -250,7 +257,7 @@ matching on name alone would have missed it.
 So the honest case for the differentiator is not "the file is full of demolished buildings". It is
 that **a static file cannot tell you which ones moved, renamed or closed, and it cannot tell you
 what a place is *now*.** Note what that sample is made of, too: mostly public schools, which
-persist. A registry of churches and storefront community centres would age faster.
+persist. A registry of churches and storefront community centers would age faster.
 
 **Our data is the memory. Maps is the eyes. Neither does the other's job.**
 
@@ -291,7 +298,7 @@ only when they are all search tools."
 agent, ran it, and both fired in a single turn—it queried the shelters table *and* grounded against
 Maps. Verified 2026-08-09 on `gemini-3.6-flash`. **The same code, the same ADK version, the same
 agent, pointed at `gemini-2.5-flash`, still returns the 400.** This is a model-side constraint on
-what a request may contain, not an ADK behaviour—so upgrading your ADK version will not fix it and
+what a request may contain, not an ADK behavior—so upgrading your ADK version will not fix it and
 downgrading will not reintroduce it.
 
 **Use a 3.x model and keep one agent.** If you pin an older one you need two, and it is a perfectly
@@ -349,7 +356,7 @@ You have **4.5 hours** and there are **8–10 of you**. That is too many people 
 and the biggest risk to your team is the first hour disappearing into setup. Spend twenty minutes
 on Step 0. It pays for itself twice over.
 
-### Step 0—Organise your team
+### Step 0—Organize your team
 
 **Pick a team lead.** One person who makes the call when you are behind—and you *will* be behind.
 
@@ -376,14 +383,14 @@ owns everything between raw tables and a readiness query the agent can call:
 - **Get the shelters-to-tracts distance query working, and hand it to the agent lane early.** They
   need the exact SQL their tool will wrap, and they are blocked until it exists. This is the
   equivalent of training a model in other challenges: an *input* to the agent, not a step 4.
-- **Decide what "reachable" means** and encode it. Ten kilometres is nothing with a car and
-  impassable without one. This is a modelling decision, it is yours, and you will be asked for it.
+- **Decide what "reachable" means** and encode it. Ten kilometers is nothing with a car and
+  impassable without one. This is a modeling decision, it is yours, and you will be asked for it.
 - **Keep unrecorded separate from "no" all the way through.** If it collapses anywhere in your
   pipeline it will collapse in your agent's answers too.
 - **Read the WARN rows** the validation section prints. They are real defects in federal data and at
   least one of them is worth a slide.
 - **The equity audit** ([explained below](#what-auditing-the-outcome-actually-means)).
-- **Decide whether to bring extra data**, and if so, source it and check the licence.
+- **Decide whether to bring extra data**, and if so, source it and check the license.
 
 #### Agent lane—2 to 3 people
 
@@ -599,7 +606,7 @@ two describe places**, and that division is the shape of the whole problem:
 
 Five tables, in `<your-project>.evacuation_readiness`.
 
-| Table | Rows (FL) | Source | Licence |
+| Table | Rows (FL) | Source | License |
 |---|---:|---|---|
 | `shelters` | 2,793 | FEMA ESF#6 National Shelter System | US Government work. FEMA and American Red Cross co-attributed |
 | `vulnerability_tracts` | 5,160 | Census ACS + CDC SVI 2022 + CDC PLACES 2025 | ACS public domain · SVI *"no constraints or limitations"* · PLACES *"Public Domain"* |
@@ -639,7 +646,7 @@ larger, merely designated. Florida has 155. South Carolina has two.
 
 **The third is distance.** Median distance from a Florida census tract to any shelter: **under
 2 km**. To one recorded as wheelchair accessible: **just over 7 km**. Nearly four times further. And
-**493,461 Floridians** live more than ten kilometres from any shelter at all—which for a household
+**493,461 Floridians** live more than ten kilometers from any shelter at all—which for a household
 with no vehicle is not a distance, it is a wall.
 
 #### The warning that comes with those numbers
@@ -706,7 +713,7 @@ honest about data that is not there.
 
 Three steps, about twenty minutes, and most teams will skip it.
 
-1. **Produce your ranked list**—whichever tracts your agent says to prioritise.
+1. **Produce your ranked list**—whichever tracts your agent says to prioritize.
 2. **Join it back to the demographic columns** in `vulnerability_tracts`, including the ones you
    were not allowed to use as inputs.
 3. **Compare to the state as a whole.** Is the distribution of your recommendations different from
@@ -716,7 +723,7 @@ Then say the answer out loud: **did the plan land where people cannot leave, or 
 happened to fill in the form?**
 
 That is not a rhetorical question on this challenge. Reporting quality varies by state by an order
-of magnitude, and a ranking built on recorded accessibility will systematically favour the places
+of magnitude, and a ranking built on recorded accessibility will systematically favor the places
 with good clerical practice. Report what you find, including if the answer is "no difference"—both
 answers are worth having, and the team that checked is doing something the team that assumed is not.
 
@@ -756,7 +763,7 @@ does that nobody else's will:
 - **Say which claims are fresh and which are historical.** A shelter record from a 2022 hurricane
   and a Maps lookup from nine seconds ago are different kinds of fact. An agent that labels them is
   more useful than one that blends them into confident prose.
-- **Make distance mean something.** Twelve kilometres is not far. It is impassable for a household
+- **Make distance mean something.** Twelve kilometers is not far. It is impassable for a household
   with no vehicle and merely inconvenient for one with two. An agent that knows the difference is
   doing the actual job.
 - **Get real travel times back.** Maps Grounding Lite's `compute_routes` returns distance *and*
@@ -772,8 +779,8 @@ does that nobody else's will:
   [free Census API key](https://api.census.gov/data/key_signup.html).
 - **Take the equity audit seriously** instead of as a footnote. The reporting bias described above
   is probably in your output right now.
-- **Bring a dataset nobody else has**—your state's assisted-living licence roster, county evacuation
-  zone polygons, transit fleet accessibility. (See below—check the licence first.)
+- **Bring a dataset nobody else has**—your state's assisted-living license roster, county evacuation
+  zone polygons, transit fleet accessibility. (See below—check the license first.)
 
 Read [how you'll be judged](#how-youll-be-judged) *before* you decide. It's at the bottom, it takes
 two minutes, and it will change what you build.
@@ -813,7 +820,7 @@ bring it. Thoughtful sourcing is exactly the judgment this challenge rewards.
 **Augment, don't replace.** Get the core working first. "Let's find better data" is one of the most
 reliable ways to lose ninety minutes and have nothing to demo.
 
-**Check the licence before you load it.** This is a publicly branded event and winning projects get
+**Check the license before you load it.** This is a publicly branded event and winning projects get
 promoted. Anything you bring has to clear the same bar we applied to ourselves:
 
 | | |
@@ -822,12 +829,12 @@ promoted. Anything you bring has to clear the same bar we applied to ourselves:
 | ❌ No **NoDerivatives** (ND) | Building on the data is the whole point |
 | ❌ No **share-alike** (ODbL, CC BY-SA) | It would encumber what *you* build |
 | ❌ No **individual-level personal data** | Aggregate public statistics only |
-| ❌ No **unstated licence** | No licence means no rights granted |
+| ❌ No **unstated license** | No license means no rights granted |
 | ✅ Public domain, CC0, US Government works | Safe |
 
 **The trap most likely to catch you on this challenge:** an ArcGIS Online item called
 *"Open Shelters in Harris County, Texas"* looks perfect and is **fabricated Esri training data**,
-licensed for demonstration only. Its own description says so. Read the licence on anything you find
+licensed for demonstration only. Its own description says so. Read the license on anything you find
 on ArcGIS Online, because a great deal of it is coursework that looks like government data.
 
 **And one that's specific to you:** the strongest datasets in this domain are the ones that name
@@ -882,7 +889,7 @@ score and the easiest place to stand out. Four concrete things:
 
 **Data decisions you can defend.** What does "reachable" mean in your agent, and why that number?
 Which of your figures measure the world and which measure the paperwork? If you brought your own
-dataset, do you know its licence?
+dataset, do you know its license?
 
 **Validation.** Did you check your tables before building, or assume no error meant no problem? The
 notebook ships a validation section—using it, and saying what it told you, counts. It reports three
