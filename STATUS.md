@@ -10,14 +10,94 @@ Last updated: 2026-08-09, end of Stage 1.
 |---|---|
 | **Challenge** | Adaptive Emergency Evacuation & Vulnerable Community Dispatch *(name under review)* |
 | **Differentiator** | Grounding with Google Maps *(under review — see below)* |
-| **Stage 1 — data research** | **Done.** `_shared/research/datasets-challenge-4.md` |
-| **Stage 2 — load notebook** | Not started. Blocked on the decision below. |
+| **Stage 1 — data research** | **CLOSED 2026-08-09.** `_shared/research/datasets-challenge-4.md` |
+| **Stage 2 — load notebook** | **Built 2026-08-09.** `notebooks/c4_01_load_explore.ipynb` — 57 cells (31 markdown, 26 code). Awaiting first Skills run |
 | **Stage 3 — repo** | Not started. |
-| **Probe run** | `_shared/research/c4_probe.py` — written, not yet run |
+| **Probe runs** | `c4_probe.py` … `c4_probe6.py` — **all six run in Skills, all findings recorded** |
+
+## The headline finding
+
+Of **53,942** usable shelters in FEMA's national file, **11,954** record wheelchair access as YES,
+2,157 as NO, and roughly **36,000 — two-thirds — are blank.**
+
+**For two-thirds of America's shelters, nobody has recorded whether a person in a wheelchair can
+get in.** And Grounding with Google Maps cannot fill that gap either: 0 of 5 accessibility probes
+returned a definite answer.
+
+That gap is the challenge's honest edge. It goes in the README's "questions that need more than we
+gave you" table, not in a footnote.
+
+Beside it: **only 1,089 of 53,942 shelters — 2.02% — carry any MEDICAL designation.** Florida has
+151, South Carolina has one. Median medical-shelter capacity is 200, identical to the median for
+all shelters, so they are not larger, only designated.
 
 ---
 
-## The open decision, and why nothing downstream has been written
+## Decisions taken 2026-08-09 (Patrick)
+
+**The reframe is approved and the challenge is built around the Stage 1 finding.**
+
+- **Name:** *Adaptive Evacuation Readiness & Vulnerable Community Planning* — one phrase changed
+  from Google's title so it stays recognisably descended from the doc they have read.
+- **User:** a county emergency manager or resilience planner, working weeks or months ahead of a
+  storm. Not a dispatcher, not during an event.
+- **Deliverable**, keeping Paul's three-segment shape:
+  1. **Who can't leave** — neighbourhoods and institutions holding people who cannot self-evacuate,
+     with counts and the reason for each. Paul's pickup roster, de-personalised to block-group and
+     facility level.
+  2. **Where they'd go, and whether it holds up** — candidate destinations checked live against the
+     world, with the gaps named. Paul's safe-haven matching, strengthened.
+  3. **What to fix before the season** — the readiness gap list. Replaces turn-by-turn routing,
+     which is Private Preview and does not exist for us.
+- **The hook (notebook §3): let the differentiator fail in public.** Ask Maps grounding where to
+  shelter people in the chosen county — it returns a fluent, cited, plausible list. Then ask the
+  three questions a planner actually needs (wheelchair access, generator, surge zone) and it
+  answers *"I couldn't find specific information."* Teaches the division of labour in the first ten
+  minutes, and smoke-tests the API at minute 10 rather than minute 200.
+- **Scope: one state, chosen by the team.** Server-side state filter on FEMA and CMS, county filter
+  on emPOWER. `load.sh` takes the state as its argument, the way Challenge 1's takes a city.
+- **HHS emPOWER is IN.** Its purpose-of-use condition — *"agreement to use it for the specified
+  purposes and to make no attempt to identify any individual"* — is satisfied by preparedness
+  planning, which is the stated purpose. Terms go in the notebook markdown.
+
+### Consequences of those choices, to handle in Stage 2
+
+- The hook makes `aiplatform.googleapis.com` a **hard dependency of the data phase**, not just the
+  build phase. §3 must fail gracefully and tell the team exactly what to enable.
+- One-state scope means the "pick your state" table must carry the **real numbers** from probe 6,
+  or someone picks South Carolina and finds a single medical shelter.
+- Proposed default: **Florida** — the right hazard profile, 151 medical shelters (second in the
+  country), and the worst wheelchair-reporting rate of any coastal state at 88 of 1,533. That
+  contrast is the demo.
+
+## What to watch on the first Skills run
+
+Written against published docs and six probe runs, but never executed end to end. The things most
+likely to bite, in order:
+
+1. **Runtime.** Budget is 5-10 minutes. The nearest-shelter query cross-joins every tract against
+   every shelter (Florida: ~5,160 × 1,533 = 7.9M pairs), which should be trivial for BigQuery but
+   has never been timed. If the total lands past ten minutes this becomes a demonstration artifact
+   and `load.sh` becomes the student path.
+2. **The CMS nursing-home pull.** It pages the full national file (14,693 rows) and filters
+   locally, because the datastore API's server-side filter syntax is unverified. That is ~8
+   requests and possibly the slowest step.
+3. **`load_table_from_dataframe` on nullable booleans.** `wheelchair_accessible` and friends are
+   pandas `boolean` dtype. Should map to BigQuery BOOL, unconfirmed.
+4. **The SVI and NRI field lists.** Both cells ask the service what fields it has and intersect
+   with what we want, so a renamed field degrades rather than crashes — but check what the
+   "not present" line prints.
+5. **Section 2's Gemini call** in a project where `aiplatform.googleapis.com` is not yet enabled.
+   It should print instructions and continue, not raise.
+
+## Still open — licensing calls, not blockers on structure
+
+- **The framing question with Google.** The runtime-refusal transcript makes it an easy ask.
+- **FEMA NSS rights** — no stated licence, American Red Cross co-attribution.
+- **FEMA NRI terms** — a revocable terms-of-use grant rather than an open licence.
+- **US-only?** Canada works on the differentiator and has none of the data.
+
+## The original blocking decision, kept for the record
 
 Google's own terms for Grounding with Google Maps say, verbatim:
 
