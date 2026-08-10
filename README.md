@@ -332,7 +332,7 @@ both.
 In the console, go to **Colab Enterprise → My Notebooks → Import → source: URL**, and paste:
 
 ```
-https://raw.githubusercontent.com/ROITraining/A4I2026-challenge-4-evacuation/main/notebooks/c4_01_load_explore.ipynb
+https://raw.githubusercontent.com/haggman/A4I2026-challenge-4-evacuation/main/notebooks/c4_01_load_explore.ipynb
 ```
 
 No clone, no git, no authentication dance.
