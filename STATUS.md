@@ -11,8 +11,8 @@ Last updated: 2026-08-09, end of Stage 1.
 | **Challenge** | Adaptive Emergency Evacuation & Vulnerable Community Dispatch *(name under review)* |
 | **Differentiator** | Grounding with Google Maps *(under review — see below)* |
 | **Stage 1 — data research** | **CLOSED 2026-08-09.** `_shared/research/datasets-challenge-4.md` |
-| **Stage 2 — load notebook** | **Built 2026-08-09.** `notebooks/c4_01_load_explore.ipynb` — 57 cells (31 markdown, 26 code). Awaiting first Skills run |
-| **Stage 3 — repo** | Not started. |
+| **Stage 2 — load notebook** | **DONE and verified 2026-08-09.** `notebooks/c4_01_load_explore.ipynb` — 58 cells, **20/20 checks in 78 seconds** in a fresh Skills project |
+| **Stage 3 — repo** | Next. `load.sh`, publish notebook, README, `JUDGING.md` section, maintainer differentiator run |
 | **Probe runs** | `c4_probe.py` … `c4_probe6.py` — **all six run in Skills, all findings recorded** |
 
 ## The headline finding
@@ -70,7 +70,20 @@ all shelters, so they are not larger, only designated.
   country), and the worst wheelchair-reporting rate of any coastal state at 88 of 1,533. That
   contrast is the demo.
 
-## What to watch on the first Skills run
+## Verified Florida numbers, 2026-08-09
+
+`shelters` 2,793 · `vulnerability_tracts` 5,160 · `hazard_tracts` 5,114 · `care_facilities` 694 ·
+`power_dependent_counties` 67.
+
+- Wheelchair access: **247 yes, 83 no, 2,463 unrecorded (88%)**
+- Medical-needs shelters: **155**. Total evacuation capacity: **848,784**
+- Median distance to any shelter **1.9 km**; to one recorded wheelchair accessible **7.1 km**
+- **493,461 Floridians** live more than 10 km from any shelter at all
+- All 2,793 shelters placed into all 67 counties and joined to emPOWER
+- Model is **`gemini-3.6-flash`** — verified with Maps grounding, and half the price per grounded
+  prompt of the 2.5 line
+
+## What was watched on the first Skills run (all resolved)
 
 Written against published docs and six probe runs, but never executed end to end. The things most
 likely to bite, in order:
