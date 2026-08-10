@@ -637,10 +637,10 @@ different and much more useful fact.
 designation. Their median capacity is 200—identical to the median for all shelters, so they are not
 larger, merely designated. Florida has 155. South Carolina has two.
 
-**The third is distance.** Median distance from a Florida census tract to any shelter: **1.9 km**.
-To one recorded as wheelchair accessible: **7.1 km**. Nearly four times further. And **493,461
-Floridians** live more than ten kilometres from any shelter at all—which for a household with no
-vehicle is not a distance, it is a wall.
+**The third is distance.** Median distance from a Florida census tract to any shelter: **under
+2 km**. To one recorded as wheelchair accessible: **just over 7 km**. Nearly four times further. And
+**493,461 Floridians** live more than ten kilometres from any shelter at all—which for a household
+with no vehicle is not a distance, it is a wall.
 
 #### The warning that comes with those numbers
 
