@@ -149,8 +149,8 @@ that should actually decide what you build.
 
 | State | Shelters | Total capacity | Wheelchair **YES** | Unrecorded | Medical-needs | Notes |
 |---|---:|---:|---:|---:|---:|---|
-| **FL** | 2,793 | 848,784 | 247 | **88%** | **155** | The default. Right hazard, second-most medical-needs shelters of the eight, and the worst accessibility reporting of any of them |
-| TX | 3,633 | 772,337 | 699 | 78% | 33 | Biggest coastal exposure after Florida |
+| **FL** | 2,793 | 848,784 | 247 | **88%** | **155** | The default. Right hazard, second-most medical-needs shelters of the eight, and the worst accessibility reporting of any of them. **No `pct_lacktrpt`**—see below |
+| TX | 3,633 | 772,337 | 699 | 78% | 33 | Biggest coastal exposure after Florida. **No `pct_lacktrpt`**—see below |
 | GA | 1,792 | 1,138,056 | 385 | 75% | 14 | Inland receiving state as well as coastal. **Read defect 6 before you quote that capacity**—two rows carry 43% of it |
 | NC | 1,565 | 445,627 | 356 | 75% | 18 | Inland flooding as much as surge |
 | LA | 1,326 | 355,010 | 140 | **85%** | 14 | The evacuation-planning literature is mostly about here, and the reporting is the second-worst of the eight |
@@ -164,6 +164,13 @@ we. Run the notebook and read its section 10 before you build a narrative on one
 **South Carolina is the worked example of getting this wrong.** 843 shelters, 328,746 spaces, and
 exactly two with a medical designation. If your entire demo is medical-needs matching, SC will not
 carry it, and you will find that out at minute 200.
+
+**One column is not published everywhere, and it happens to hit the default state.** CDC PLACES does
+not report `LACKTRPT`—lack of reliable transportation—for **Florida or Texas**. Every state's table
+carries the `pct_lacktrpt` column, but for those two it is empty, and the validation section says so
+in a WARN. Neither state is blind to transport either way: `pct_no_vehicle` from CDC SVI and
+`households_no_vehicle` from ACS both survive. They measure vehicle *ownership*, which is not the
+same as being able to get a ride, so know which one you are quoting.
 
 > **Why hurricanes, and what else would this work for?**
 >
