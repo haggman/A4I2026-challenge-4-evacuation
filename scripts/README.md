@@ -12,8 +12,8 @@ why, and the explanations matter. Use this if you can't.
 From the **root of the repo**, in Cloud Shell:
 
 ```bash
-bash scripts/load.sh              # loads the default region
-bash scripts/load.sh --list       # show every available region
+bash scripts/load.sh              # loads Florida, the default
+bash scripts/load.sh --list       # show every state we've published
 bash scripts/load.sh --help       # usage
 ```
 

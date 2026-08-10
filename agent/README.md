@@ -91,4 +91,4 @@ An agent that reports "no accessible shelters nearby" when it means "nobody reco
 stated a fact about paperwork as a fact about buildings. An agent that says *"eleven of these I can
 speak to, sixty-four nobody has assessed"* is more useful, more honest, and will score better.
 
-See the README for the five data traps and Section 13 of the notebook for the constraints.
+See the README for the six data traps and Section 13 of the notebook for the constraints.

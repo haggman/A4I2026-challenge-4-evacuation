@@ -5,7 +5,7 @@
 Everything this challenge uses is pulled live from its original publisher by
 `notebooks/c4_01_load_explore.ipynb` and loaded straight into BigQuery in **your** project. Nothing
 is pre-cleaned and handed to you, because the cleaning decisions *are* the teaching—a shipped
-table would hide five real defects in federal data that you should see happen.
+table would hide six real defects in federal data that you should see happen.
 
 If a publisher is having a bad morning, `bash scripts/load.sh <STATE>` rebuilds the identical tables
 from a Cloud Storage snapshot instead.
