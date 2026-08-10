@@ -78,24 +78,26 @@ state. Change one line at the top of the notebook and everything follows.
 
 **You do not have to pick the state you are sitting in.** Pick the one that makes your story.
 
-These numbers come from an actual run, so you are choosing with your eyes open:
+These come from the run that produced the snapshots in Cloud Storage, so you are choosing with
+your eyes open. **"Wheelchair YES" is the count recorded as yes, not the count recorded at all**—the
+"no" answers are a few dozen per state and the *unrecorded* column is the one that should worry you:
 
-| State | Shelters | Total capacity | Wheelchair recorded | Medical-needs | Notes |
-|---|---:|---:|---:|---:|---|
-| **FL** | 2,793 | 848,784 | 247 | **155** | The default. Right hazard, second-most medical shelters in the country, and the worst accessibility reporting of any coastal state |
-| TX | 2,651 | 772,337 | 526 | 31 | Biggest coastal exposure after Florida |
-| GA | 1,573 | 1,138,056 | 375 | 14 | Huge capacity, inland receiving state as well as coastal |
-| NC | 1,207 | 445,627 | 288 | 16 | Inland flooding as much as surge |
-| LA | 1,006 | 355,010 | 125 | 14 | The evacuation-planning literature is mostly about here |
-| SC | 604 | 328,746 | 159 | **1** | **Cautionary.** One medical-needs shelter in the whole state |
-| NY | 3,724 | 1,639,805 | 921 | 10 | Surge risk with almost no medical designation |
-| CA | 5,648 | 6,554,178 | 1,105 | 204 | Wildfire rather than hurricane. Works, different story |
+| State | Shelters | Total capacity | Wheelchair **YES** | Unrecorded | Medical-needs | Notes |
+|---|---:|---:|---:|---:|---:|---|
+| **FL** | 2,793 | 848,784 | 247 | **88%** | **155** | The default. Right hazard, second-most medical-needs shelters of any state here, and the worst accessibility reporting of the eight |
+| TX | 3,633 | 772,337 | 699 | 78% | 33 | Biggest coastal exposure after Florida |
+| GA | 1,792 | 1,138,056 | 385 | 75% | 14 | Inland receiving state as well as coastal. **Read defect 6 before you quote that capacity**—two rows carry 43% of it |
+| NC | 1,565 | 445,627 | 356 | 75% | 18 | Inland flooding as much as surge |
+| LA | 1,326 | 355,010 | 140 | **85%** | 14 | The evacuation-planning literature is mostly about here, and the reporting is the second-worst of the eight |
+| SC | 843 | 328,746 | 189 | 76% | **2** | **Cautionary.** Two medical-needs shelters in the whole state |
+| NY | 4,542 | 1,639,805 | 1,122 | 74% | 14 | Surge risk with almost no medical designation—0.3% |
+| CA | 6,873 | 6,554,178 | 1,161 | 81% | **209** | Wildfire rather than hurricane. Works, different story, and the most medical-needs shelters here |
 
 Any state works, including ones not listed—you just have not seen their numbers, and neither have
 we. Run the notebook and check Section 9 before you build a narrative on one.
 
-**South Carolina is the worked example of getting this wrong.** 604 shelters, 328,746 spaces, and
-exactly one with a medical designation. If your entire demo is medical-needs matching, SC will not
+**South Carolina is the worked example of getting this wrong.** 843 shelters, 328,746 spaces, and
+exactly two with a medical designation. If your entire demo is medical-needs matching, SC will not
 carry it, and you will find that out at minute 200.
 
 ### One afternoon, one person, one deadline
@@ -393,8 +395,13 @@ start writing before the data lane finishes.
 Nationally it is roughly two thirds. **For most of America's shelters, nobody has written down
 whether a person in a wheelchair can get in.**
 
-And Grounding with Google Maps cannot fill that gap either. Five places, five different types, zero
-definite answers—you will watch it happen in Section 2 of the notebook.
+And Grounding with Google Maps will not fill that gap from an *area* question. Five places, five
+different types, zero definite answers—you will watch it happen in Section 2 of the notebook.
+
+**The shape of the question changes the answer, though.** Ask about one named building at one
+address and it answers roughly five times in eight, agreeing with FEMA four times in five where both
+have a view. Iterating your candidate shelters one at a time is slow, it is real, and almost nobody
+will try it.
 
 **The second number is scarcity.** Nationally only **2%** of shelters carry any medical-needs
 designation. Their median capacity is 200—identical to the median for all shelters, so they are
@@ -407,9 +414,9 @@ vehicle is not a distance, it is a wall.
 
 ### The warning that comes with those numbers
 
-Oregon reports 106 medical-needs shelters. Hawaii reports 88. Texas reports 31.
+California reports 209 medical-needs shelters. Texas reports 33. New York reports 14.
 
-Oregon is not five times better prepared than Texas. **Oregon fills in the form.**
+New York is not one-fifteenth as ready as California. **California fills in the form.**
 
 This file measures what states recorded, not what exists. **Any team that ranks states, counties or
 neighbourhoods on these counts has measured bureaucracy and called it risk.** A judge will ask you
@@ -441,19 +448,26 @@ The notebook does not hand you a cleaned table, because these are the teaching:
 
 1. **2,205 Wisconsin shelters have latitude and longitude swapped.** Every value is a well-formed
    float in a plausible range. A national range check passes because 97% of the file is fine.
+   The single-row version of the same problem: one shelter registered to **Texas** carries
+   coordinates in **Sonoma County, California**, 2,400 km away. `state` and the coordinates
+   disagree, and in a spatial join the coordinates win silently.
 2. **A blank string is not a null.** `ada_compliant IS NOT NULL` matches 49,356 rows nationally;
    46,338 of them contain a single space.
 3. **`ada_compliant` is a decoy.** It is the obvious name, sits beside the real field, and has 63
-   `YES` rows in the entire United States. `wheelchair_accessible` has 14,092.
+   `YES` rows in the entire United States. `wheelchair_accessible` has 11,954.
 4. **The flags are `YES`/`NO`, not `Y`/`N`**—and the same table uses whole words elsewhere. A
    filter returning zero looks exactly like a feature that does not exist.
 5. **Census tract boundaries changed in 2020.** The BigQuery geometry table is 2010 vintage;
    everything else is 2020. Anchoring on the wrong one silently discards a fifth of the state.
-6. **A handful of shelters record impossible capacities.** Georgia publishes two above 100,000
-   spaces and California one—more than the largest stadium in the country. They are four rows in
-   nine thousand, and they will quietly inflate any state total you put on a slide. The notebook
-   flags them and prints them rather than dropping them, because the number is FEMA's and it is
-   not our place to silently overwrite it.
+6. **Three shelters record impossible capacities, and one state's headline number depends on
+   two of them.** Commerce High School and Commerce Primary School, both in Commerce, Georgia,
+   report **270,135** and **225,112** evacuation spaces. Commerce has a population of about seven
+   thousand. Those two rows are **43% of Georgia's entire reported state capacity**—take them out
+   and Georgia drops from first of these eight states to fourth. California's is gentler and more
+   revealing: *"St. Anthony Retreat, 10 Buildings"* reports 135,036 spaces with a post-impact
+   capacity of exactly half that, which is what a units error looks like from the outside.
+   The notebook flags all three and prints them rather than dropping them—the number is FEMA's,
+   and quietly overwriting a federal record is not ours to do.
 
 **This is why the notebook's validation section has three verdicts, not two.** A **FAIL** means our
 load is broken and you should stop. A **WARN** means the source data is untidy right there, and the
