@@ -17,10 +17,17 @@ Last updated: 2026-08-09, end of Stage 1.
 ## Stage 3 checklist
 
 - [x] Notebook runs clean in a fresh Skills project; diagnostic block captured — **20/20, 78s**
-- [ ] **Differentiator run end to end by a maintainer against the shipped tables.**
-      `_shared/research/c4_maintainer_agent.py` is written and not yet run. It answers the two
-      things the judging guide currently cannot: how much of FEMA's registry still checks out
-      against Google Maps, and whether Maps agrees with FEMA about a named shelter
+- [x] **Differentiator run end to end by a maintainer against the shipped tables** — done
+      2026-08-09, and it corrected three claims we had already published:
+      **(1)** the built-in-tool limit is model-generation specific — a 400 on `gemini-2.5-flash`,
+      but on 3.x both tools live in one ADK agent and both fire, so the sub-agent is now the
+      fallback rather than mandatory;
+      **(2)** FEMA's registry is **93% accurate on existence** (14 of 15 exist, 1 renamed) — our
+      staleness narrative was overstated and has been rewritten;
+      **(3)** Maps grounding **can** answer accessibility for **one named place at a time**
+      (5 of 8, agreeing with FEMA 4 of 5) where an area question answers 0 of 5.
+      Flagship finding for the demo: two Monroe County tracts sit **1.4 km from a shelter and
+      70 km from one anybody recorded as wheelchair accessible**
 - [ ] `bash scripts/load.sh FL` tested in a fresh project, **including a re-run** — the second run
       takes the other branch and is the one that finds things
 - [ ] Snapshot published to GCS and verified readable (`c4_90_publish_snapshot.ipynb`, 8 states)

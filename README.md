@@ -45,13 +45,14 @@ rest when you hit it.
 
 ### Three things everyone needs to know by the end of hour one
 
-**1. Grounding with Google Maps cannot answer the question this challenge is about.** It will find
-you shelters. It will not tell you whether someone in a wheelchair can get into one. Section 2 of
-the notebook demonstrates this in about ninety seconds, and the whole design follows from it.
+**1. Grounding with Google Maps cannot answer the question this challenge is about—at least not
+the way you will first ask it.** Ask which shelters in a county take a wheelchair and it cannot
+help. Section 2 of the notebook shows that in about ninety seconds, and the whole design follows
+from it. There is a way to get more out of it than that, and finding it is worth real credit.
 
-**2. A built-in tool cannot share an agent with a function tool of your own.** You will need a
-sub-agent. This is the single most likely thing to cost your team half an hour, and
-[Section 7](#7-the-technology-youll-use) tells you exactly how to avoid it.
+**2. Use a Gemini 3.x model.** On 2.5 and older, a built-in tool cannot share an agent with a
+function tool of your own—the request is rejected outright, and working around it costs half an
+hour. On 3.x it simply works. [Section 7](#7-the-technology-youll-use) has both architectures.
 
 **3. For most shelters, the accessibility field is blank—and blank does not mean "no".** It means
 nobody wrote it down. An agent that conflates those two is confidently wrong about the thing that
@@ -224,12 +225,18 @@ rather than core.
 **Why it belongs in this problem**, rather than being bolted on:
 
 FEMA's shelter file is a **historical registry**. Every facility ever registered as a shelter, one
-row each, some of those rows entered during a hurricane in 2018. FEMA's own layer description says,
-in capital letters, that it must not be used to determine whether a facility is operational.
+row each, some entered during a hurricane years ago. FEMA's own layer description says in capital
+letters that it must not be used to determine whether a facility is operational.
 
-So the authoritative federal source explicitly disclaims the one thing you most need to know: **is
-this place still there.** That is not a flaw in the data. It is a statement about what a static file
-can and cannot be, and it is precisely the gap a live grounded lookup fills.
+We measured how stale it actually is, so you do not have to guess: **we took fifteen Florida
+shelters at random and asked Google Maps about each. Fourteen still exist. One had been renamed**—
+First Presbyterian Church of Maitland is now Maitland Presbyterian Church, same building, different
+name, and a lookup matching on name alone would have missed it.
+
+So the honest case for the differentiator is not "the file is full of demolished buildings". It is
+that **a static file cannot tell you which ones moved, renamed or closed, and it cannot tell you
+what a place is *now*.** Note what the sample is made of, too: mostly public schools, which persist.
+A registry of churches and community centres would age faster.
 
 Our data is the memory. Maps is the eyes. Neither does the other's job.
 
@@ -248,32 +255,48 @@ GOOGLE_CLOUD_LOCATION     = global
 GOOGLE_GENAI_USE_VERTEXAI = True
 ```
 
-### The architecture constraint—read this before you write code
+### Your model choice decides your architecture—read this before you write code
 
-**A built-in tool cannot sit in the same agent as a function tool of your own.** The API says so:
+**On Gemini 2.5 and older**, a built-in tool cannot sit in the same agent as a function tool of
+your own. The request is rejected:
 
 ```
 400 INVALID_ARGUMENT—"Unable to submit request because Multiple tools are supported
 only when they are all search tools."
 ```
 
-`GoogleMapsGroundingTool` takes no constructor arguments and does **not** accept
-`bypass_multi_tools_limit`, unlike `GoogleSearchTool`. ADK will not auto-wrap it either. So:
+**On Gemini 3.x it works.** We put `google_maps_grounding` and a BigQuery function tool in one ADK
+agent, ran it, and both fired in a single turn—it queried the shelters table *and* grounded against
+Maps. Verified 2026-08-09 on `gemini-3.6-flash`; the same request on `gemini-2.5-flash` still
+returns the 400.
+
+**Use a 3.x model and keep one agent.** If you pin an older one, use this, which is a perfectly good
+architecture regardless:
 
 - a **maps agent** holding `google_maps_grounding` and nothing else
 - your **root agent** holding your own tools, an MCP server, and the maps agent wrapped in
   `AgentTool`
 
-Verified: `google_maps` and `google_search` **can** coexist, so your maps sub-agent may hold both.
+`GoogleMapsGroundingTool` takes no constructor arguments and does not accept
+`bypass_multi_tools_limit`, so on an older model the sub-agent is the only route.
+
+**A warning you will see and should ignore:** `Tools at indices [0] are not compatible with
+automatic function calling (AFC). AFC is disabled.` That is the client declining to run the
+function-calling loop for you. ADK runs its own. It is noise.
 
 ### What it will and will not do
 
 | Will | Will not |
 |---|---|
-| Find places, addresses, ratings, hours | Tell you whether a place is wheelchair accessible |
-| Tell you whether somewhere is open **right now** | Give you a driving time or a distance |
-| Tell you a business has permanently closed | Give you a route or a polyline |
-| Say honestly when it does not know | Answer anything but English |
+| Find places, addresses, ratings, hours | Give you a driving time or a distance |
+| Tell you whether somewhere is open **right now** | Give you a route or a polyline |
+| Tell you a place has closed, or been renamed | Answer anything but English |
+| Say honestly when it does not know | Answer an *area* question about accessibility |
+
+**On accessibility, the shape of the question decides the answer.** *"Which shelters in this county
+take a wheelchair"* gets you nowhere. **One named building at one address** got a definite answer 5
+times out of 8 in our testing, agreeing with FEMA's record 4 times out of 5 where both had a view.
+That is worth building around.
 
 Five to eight seconds per grounded call is normal. Routing is Private Preview—**do not design a
 deliverable around a route.**
@@ -332,7 +355,7 @@ both.
 In the console, go to **Colab Enterprise → My Notebooks → Import → source: URL**, and paste:
 
 ```
-https://raw.githubusercontent.com/haggman/A4I2026-challenge-4-evacuation/main/notebooks/c4_01_load_explore.ipynb
+https://raw.githubusercontent.com/ROITraining/A4I2026-challenge-4-evacuation/main/notebooks/c4_01_load_explore.ipynb
 ```
 
 No clone, no git, no authentication dance.

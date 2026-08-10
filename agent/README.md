@@ -24,36 +24,47 @@ The design decisions in your agent are what you are judged on.
   call it and act on what comes back. Naming it in a slide does not count, and neither does calling
   it once for decoration in a flow that would give the same answer without it.
 
-## The architecture is not a suggestion
+## Your model choice decides your architecture
 
-**A built-in tool cannot share an agent with a function tool of your own.** The API is explicit:
+**On Gemini 2.5 and older**, a built-in tool cannot share an agent with a function tool of your own:
 
 ```
 400 INVALID_ARGUMENT—"Unable to submit request because Multiple tools are supported
 only when they are all search tools."
 ```
 
-`GoogleMapsGroundingTool` takes no constructor arguments and does **not** accept
-`bypass_multi_tools_limit`, unlike `GoogleSearchTool`. ADK will not transparently wrap it either.
-Since this event requires a tool of your own, you need two agents:
+**On Gemini 3.x it works.** Verified 2026-08-09: `google_maps_grounding` and a BigQuery function
+tool in one ADK agent, run end to end, both firing in a single turn. The same request on
+`gemini-2.5-flash` still returns the 400.
+
+**Use a 3.x model and keep one agent.** If you pin an older one, you need two, and it is a fine
+architecture either way:
 
 - a **maps agent** holding `google_maps_grounding` and nothing else
 - your **root agent** holding your function tools, an MCP server, and the maps agent wrapped in
   `AgentTool`
 
-Verified: `google_maps` and `google_search` *can* live in the same agent, so your maps sub-agent
-can hold both grounding tools if you want web results alongside places.
+`GoogleMapsGroundingTool` takes no constructor arguments and does not accept
+`bypass_multi_tools_limit`, so on an older model the sub-agent is the only route. `google_maps` and
+`google_search` coexist on any model.
 
-This costs about twenty minutes if you know it and about an hour if you discover it. Now you know it.
+**Ignore this warning**—it appears once per turn and means nothing here:
+`Tools at indices [0] are not compatible with automatic function calling (AFC). AFC is disabled.`
+ADK runs its own function-calling loop.
 
 ## What Grounding with Google Maps will and will not do
 
 | Will | Will not |
 |---|---|
-| Find places, addresses, ratings, opening hours | Tell you whether a place is wheelchair accessible |
-| Tell you whether somewhere is open **right now** | Give you a driving time or a distance |
-| Tell you a business has permanently closed | Give you a route or a polyline |
-| Say honestly when it does not know | Answer anything but English |
+| Find places, addresses, ratings, opening hours | Give you a driving time or a distance |
+| Tell you whether somewhere is open **right now** | Give you a route or a polyline |
+| Tell you a place has closed, or been renamed | Answer anything but English |
+| Say honestly when it does not know | Answer an *area* question about accessibility |
+
+**Accessibility depends on how you ask.** An area question gets you nothing. **One named building at
+one address** got a definite answer 5 times out of 8 in our testing, and agreed with FEMA 4 times
+out of 5 where both had a view. Iterating over your candidate shelters one at a time is a real
+strategy and almost nobody will try it.
 
 Routing and Search Along Route are Private Preview. **Do not design a deliverable around a route.**
 Five to eight seconds per grounded call is normal, not a bug.
@@ -68,10 +79,13 @@ the rest of what comes back.
 **Our data knows what a place *is*. Maps knows whether it is *still there*. Neither knows whether it
 works for the person you are trying to help.**
 
-FEMA's file is a historical registry—a building recorded as a shelter during a 2022 hurricane may
-not be a shelter, or even standing, today. That is what a runtime lookup is for. But no amount of
-grounding will tell you whether someone in a wheelchair can get through the door, because for
-roughly two thirds of American shelters **nobody has written it down.**
+FEMA's file is a historical registry. We checked fifteen Florida shelters against Google Maps:
+**fourteen still exist, one had been renamed** (same building, new name—a name-only lookup misses
+it). So the value of a runtime check is not finding rubble, it is catching the ones that moved or
+changed, and knowing what a place is *now*.
+
+The accessibility gap is the harder one. For roughly two thirds of American shelters **nobody has
+written it down**, and no amount of grounding creates a record that does not exist.
 
 An agent that reports "no accessible shelters nearby" when it means "nobody recorded any" has
 stated a fact about paperwork as a fact about buildings. An agent that says *"eleven of these I can
