@@ -544,7 +544,7 @@ own. Review before you accept.
 
 [Docs](https://antigravity.google/docs/cli)
 ·
-[Hands-on codelab](https://codelabs.developers.google.com/antigravity-cli-getting-started)
+[Hands-on codelab](https://codelabs.developers.google.com/antigravity-cli-hands-on)
 
 ### Step 4—Load the data
 
@@ -924,9 +924,9 @@ them against a key.** They're asking whether you made the choice on purpose and 
 **Your differentiator**
 [Grounding with Google Maps](https://ai.google.dev/gemini-api/docs/generate-content/maps-grounding)
 ·
-[Attribution requirements](https://developers.google.com/maps/documentation/grounding-with-google-maps/attribution)
+[Attribution requirements](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#google-maps-attribution-guidelines)
 ·
-[Maps Grounding Lite MCP server](https://developers.google.com/maps/documentation/grounding-lite)
+[Maps Grounding Lite MCP server](https://developers.google.com/maps/ai/grounding-lite)
 ·
 [Maps Demo Key](https://developers.google.com/maps/demo-key)
 
