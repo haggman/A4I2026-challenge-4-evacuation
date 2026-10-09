@@ -913,6 +913,10 @@ data/                                 Empty. Everything lives in BigQuery, in yo
 agent/                                Empty. Your agent goes here
 ```
 
+`c4_90_publish_snapshot.ipynb` is for ROI maintainers: it regenerates the Cloud Storage snapshot
+that `scripts/load.sh` reads from. If you run it you will get a permissions error, because you do not
+have write access to our bucket. That is expected, and you never need it.
+
 `agent/` is empty on purpose. We built the on-ramp—every registered shelter in your state, the
 tracts around them, the counties where people depend on electricity to stay alive, the hazard
 exposure, the licences checked, and a validation suite that tells you plainly what is wrong with all
