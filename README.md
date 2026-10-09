@@ -410,7 +410,7 @@ Everything lands in one repo, not eight forks.
 **Everyone else: create a free [GitHub](https://github.com) account now** if you don't have one,
 and **send your username to the repo owner** while they're setting up.
 
-**Agree your state and your scenario** (see above). Five minutes. Write it where everyone can see
+**Agree your state, your track, and your scenario** (see above). Five minutes. Write it where everyone can see
 it.
 
 **Then spend ten more on [Going further](#going-further).** It sits near the bottom because it only
