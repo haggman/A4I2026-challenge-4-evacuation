@@ -42,7 +42,7 @@ what each of you needs in the first fifteen minutes.
 
 | If you are… | Read now | Come back for |
 |---|---|---|
-| **Everyone, together** | [The four things](#the-four-things-youre-working-with) · [What you're building](#what-youre-building) · [Pick your state](#now-pick-your-state) | — |
+| **Everyone, together** | [The four things](#the-four-things-youre-working-with) · [Three tracks](#three-tracks-one-architecture) · [What you're building](#what-youre-building) · [Pick your state](#now-pick-your-state) | — decide these before anyone opens a keyboard |
 | **Team lead** | [Step 0](#step-0organize-your-team) · [How you'll be judged](#how-youll-be-judged) | [Going further](#going-further)—read it *before* you write code, not before you demo |
 | **Data lane** | [Step 4, load the data](#step-4load-the-data) · [What you'll have](#what-youll-have) | [The data, and why we chose it](#the-data-and-why-we-chose-it) · Section 12 of the notebook |
 | **Agent lane** | [What you're building](#what-youre-building) · [The technology](#the-technology-youll-use) | [`agent/README.md`](agent/) · [Reference](#reference) |
@@ -76,6 +76,50 @@ Small vocabulary, used consistently everywhere from here on. Worth thirty second
 | **EVAC / POST** | A shelter designated for use *before* landfall versus one for *after* impact. Different buildings, different job, and the federal file tells you which |
 
 The whole challenge is: **a county, a season, and a plan that does not assume everyone can drive.**
+
+---
+
+## Three tracks, one architecture
+
+Every team shares the same spine: one state, five tables, one agent that calls Grounding with Google
+Maps and knows when not to, one readiness brief. **What changes between tracks is which question the
+emergency manager hands you first, not the machinery.**
+
+**These are suggestions, not a menu you are confined to.** Pick one, combine two, or invent your
+own—if you can see an evacuation-readiness problem in the same vein that these three miss, that is
+exactly the kind of judgment this challenge rewards. Just be ready to say why yours is worth solving.
+
+| Track | The situation | Who your user is | What makes it hard |
+|---|---|---|---|
+| 🏚️ **Shelter readiness** | The state's shelter list is on file. Which of them can take the people who will actually arrive, and which are themselves in the surge zone? | The county emergency manager, writing the August brief | For most shelters the accessibility field is blank, and the federal record may describe a building demolished in 2023 |
+| 🚌 **Getting people out** | The plan on file assumes everyone can drive. Where are the households that cannot, and how far are they from a shelter that could take them? | The same manager, or the transit coordinator she calls | You have straight-line distance, not drive time, and owning no car is not the same as having no ride |
+| 🏥 **The medically dependent** | Nursing homes, dialysis, oxygen concentrators. Where are the concentrations, where is the power dependence, and which shelters are designated for medical needs? | A hospital or health-department emergency planner | Power dependence is published per county, not per tract, and medical-needs shelters are rare—South Carolina has two |
+
+### What a strong version of each looks like
+
+**🏚️ Shelter readiness** starts from `shelters`—`evacuation_capacity`, `wheelchair_accessible`,
+`generator_onsite`, `in_surge_slosh_area`—with `hazard_tracts` for the exposure of the ground each
+one stands on. The strong version treats *unrecorded* as its own category and never as "no," then
+spends Grounding with Google Maps on the one question the federal file cannot answer: is this
+building still there, and what is it now? Output: a ranked list of shelters to verify before the
+season, with a reason per row.
+
+**🚌 Getting people out** starts from `vulnerability_tracts`—`households_no_vehicle`,
+`pct_no_vehicle`, `pct_age_65_plus`, `pct_disability`, `mobile_homes`—and a spatial query against
+`shelters`, which for most teams is the first time they write `ST_DISTANCE`. Maps grounding earns its
+place here finding what is *near* a tract, not routing to it; routing is still Private Preview (see
+[the questions that need more](#questions-that-need-more-than-we-gave-you)). The strong version says
+plainly which transport measure it is quoting, because the two in the table measure different
+things. Output: the tracts where a pickup point or a para-transit run would do the most good, and why.
+
+**🏥 The medically dependent** starts from `care_facilities` and `power_dependent_counties`, and from
+`shelters.is_medical`. The strong version is honest about scale—county-level power dependence cannot
+be assigned to a block—and uses Maps grounding to confirm the facilities still operate. Output: the
+facilities and counties where a generator, a transfer agreement or a medical-needs designation should
+exist before September and does not.
+
+**Can you do more than one?** A real readiness brief would, and the three share every table. But
+three shallow tracks lose to one that is genuinely good, and you have four and a half hours.
 
 ---
 
@@ -142,12 +186,11 @@ state. Change one line at the top of the notebook and everything follows.
 
 **You do not have to pick the state you are sitting in.** Pick the one that makes your story.
 
-**And the state is not the only thing that is yours to choose.** This challenge names one user—a
-county emergency manager planning before a season—but that is a suggestion, not a cage. A
-different user with the same data is a legitimate move: a hospital planning patient transfer, a
-utility deciding which substations to harden, a nonprofit deciding where to pre-position
-supplies. **If you can see a readiness problem in the same vein that ours misses, take it.** Just
-be ready to say why yours is worth solving.
+**And the state is not the only thing that is yours to choose.** [Your track](#three-tracks-one-architecture)
+is the other, and each of the three names a user—but those are suggestions, not a cage. A
+different user with the same data is a legitimate move: a utility deciding which substations to
+harden, a nonprofit deciding where to pre-position supplies. **If you can see a readiness problem
+in the same vein that ours miss, take it.** Just be ready to say why yours is worth solving.
 
 These come from the run that produced the snapshots in Cloud Storage, so you are choosing with your
 eyes open. **Read the "unrecorded" column, not the "yes" column.** "Wheelchair YES" is the count
