@@ -546,9 +546,9 @@ Antigravity CLI already installed. Nothing to set up on your laptop, no admin ri
 3. `cloudshell workspace .` opens the editor on it.
 
 New to any of this?
-[Using Cloud Shell](https://cloud.google.com/shell/docs/using-cloud-shell)
+[Using Cloud Shell](https://docs.cloud.google.com/shell/docs/using-cloud-shell)
 ·
-[Cloud Shell Editor overview](https://cloud.google.com/shell/docs/editor-overview)
+[Cloud Shell Editor overview](https://docs.cloud.google.com/shell/docs/editor-overview)
 
 **While you are here, enable the two APIs in one command.** The console will otherwise prompt you
 for them **twice**—once when Colab Enterprise first opens and again from a separate button on its
@@ -988,7 +988,7 @@ them against a key.** They're asking whether you made the choice on purpose and 
 ## Reference
 
 **Your differentiator**
-[Grounding with Google Maps](https://ai.google.dev/gemini-api/docs/generate-content/maps-grounding)
+[Grounding with Google Maps](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps)
 ·
 [Attribution requirements](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#google-maps-attribution-guidelines)
 ·
@@ -997,13 +997,13 @@ them against a key.** They're asking whether you made the choice on purpose and 
 [Maps Demo Key](https://developers.google.com/maps/demo-key)
 
 **The rest of the stack**
-[ADK](https://google.github.io/adk-docs/)
+[ADK](https://adk.dev/)
 ·
-[Agent Runtime](https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview)
+[Agent Runtime](https://docs.cloud.google.com/gemini-enterprise-agent-platform/build/runtime)
 ·
 [MCP Toolbox for Databases](https://github.com/googleapis/mcp-toolbox)
 ·
-[BigQuery geospatial functions](https://cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions)
+[BigQuery geospatial functions](https://docs.cloud.google.com/bigquery/docs/reference/standard-sql/geography_functions)
 ·
 [Antigravity](https://antigravity.google/docs/getting-started)—IDE and CLI
 
