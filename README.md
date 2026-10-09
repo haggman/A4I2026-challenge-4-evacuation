@@ -926,6 +926,12 @@ of it. We didn't build the vehicle. [`agent/README.md`](agent/) restates what yo
 hours—that's the design, not a failure. A team that gets three quarters of the way with clear
 reasoning and honest limitations will beat a team that demos something polished and hollow.
 
+**You are judged against the track you chose**, not against a fixed idea of the right answer. A
+shelter-readiness team is expected to hand over a list of buildings to verify before the season; a
+medically-dependent team is expected to hand over the facilities and counties where a generator or
+a transfer agreement should exist and does not. Neither is marked down for not looking like the
+other. Say which track you took, and which state, early.
+
 | Dimension | Weight | The question judges are asking |
 |---|---:|---|
 | **Impact & insight** | 30 | Would an emergency manager actually use this? Is the brief specific enough to act on? |
