@@ -144,7 +144,7 @@ Here is what she asks between now and the end of the month, and what answers eac
 
 | What she asks | What answers it |
 |---|---|
-| *"Which neighbourhoods in my county would struggle most to self-evacuate?"* | `vulnerability_tracts`—no-vehicle households, over-65 share, disability prevalence, mobile homes |
+| *"Which neighborhoods in my county would struggle most to self-evacuate?"* | `vulnerability_tracts`—no-vehicle households, over-65 share, disability prevalence, mobile homes |
 | *"How many people here depend on electricity for medical equipment?"* | `power_dependent_counties`—and note it is county-level, so you can say how many but not which block |
 | *"Where would I send them, and how far is it?"* | `shelters` plus `vulnerability_tracts`—a spatial query, not a lookup |
 | *"Which of those shelters can actually take a wheelchair?"* | `shelters.wheelchair_accessible`—**and the honest answer is mostly "nobody recorded it"** |
@@ -712,7 +712,7 @@ California reports 209 medical-needs shelters. Texas reports 33. New York report
 New York is not one-fifteenth as ready as California. **California fills in the form.**
 
 This file measures what states recorded, not what exists. **Any team that ranks states, counties or
-neighbourhoods on these counts has measured bureaucracy and called it risk.** That is the same trap
+neighborhoods on these counts has measured bureaucracy and called it risk.** That is the same trap
 as using a demographic proxy for a physical cause, and a judge will ask you about it. The defensible
 move is to treat *unrecorded* as its own category—visible, counted, and never silently folded into
 "no".
@@ -919,7 +919,7 @@ have write access to our bucket. That is expected, and you never need it.
 
 `agent/` is empty on purpose. We built the on-ramp—every registered shelter in your state, the
 tracts around them, the counties where people depend on electricity to stay alive, the hazard
-exposure, the licences checked, and a validation suite that tells you plainly what is wrong with all
+exposure, the licenses checked, and a validation suite that tells you plainly what is wrong with all
 of it. We didn't build the vehicle. [`agent/README.md`](agent/) restates what yours has to do.
 
 ---
@@ -944,7 +944,7 @@ other. Say which track you took, and which state, early.
 | **Craft & communication** | 15 | Does the short pitch land, does the quick demo work, can you justify your interface? |
 | **Bonus—range** | **+10** | Technology breadth and ambition that *serves* the solution |
 
-Bonus sits **on top** of the 100, so ambition can't cannibalise the core. Nail the fundamentals and
+Bonus sits **on top** of the 100, so ambition can't cannibalize the core. Nail the fundamentals and
 add nothing, and you can still win. Wire up five services with no coherent readiness brief, and you
 can't win on breadth alone.
 
