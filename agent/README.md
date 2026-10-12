@@ -56,8 +56,8 @@ ADK runs its own function-calling loop.
 
 | Will | Will not |
 |---|---|
-| Find places, addresses, ratings, opening hours | Give you a driving time or a distance |
-| Tell you whether somewhere is open **right now** | Give you a route or a polyline |
+| Find places, addresses, ratings, opening hours | Give you a drive time unless `routing` is in `grounding_types` |
+| Tell you whether somewhere is open **right now** | Know anything in our tables—who lives nearby, wheelchair flags, generators |
 | Tell you a place has closed, or been renamed | Answer anything but English |
 | Say honestly when it does not know | Answer an *area* question about accessibility |
 
@@ -66,8 +66,12 @@ one address** got a definite answer 5 times out of 8 in our testing, and agreed 
 out of 5 where both had a view. Iterating over your candidate shelters one at a time is a real
 strategy and almost nobody will try it.
 
-Routing and Search Along Route are Private Preview. **Do not design a deliverable around a route.**
-Five to eight seconds per grounded call is normal, not a bug.
+Routing is available too: add `routing` to `grounding_types` alongside `places` and the same grounded
+call returns drive times and directions ([Routing—Find Directions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#routing-find-directions)).
+That is the add-on that turns the straight-line distances in our tables into something a planner can
+use—the tables themselves carry straight-line distance only. Routing is newer than the rest of the
+feature, so if you build on it, test it early. Five to eight seconds per grounded call is normal,
+not a bug.
 
 Attribution is a requirement, not a nicety: display the Google Maps sources immediately after the
 content they support, viewable within one user interaction, with the words "Google Maps" unmodified
@@ -91,4 +95,5 @@ An agent that reports "no accessible shelters nearby" when it means "nobody reco
 stated a fact about paperwork as a fact about buildings. An agent that says *"eleven of these I can
 speak to, sixty-four nobody has assessed"* is more useful, more honest, and will score better.
 
-See the README for the six data traps and Section 13 of the notebook for the constraints.
+See the README's "Six defects you will meet" for the data traps and Section 13 of the notebook for
+the constraints.

@@ -261,7 +261,7 @@ echo "  is NULL for most shelters. That means nobody recorded it - not that the 
 echo "  is no. Treat unrecorded as its own category or you will report a fact about"
 echo "  paperwork as a fact about buildings."
 echo
-echo "  Next: build your agent. Grounding with Google Maps is a built-in tool and CANNOT"
-echo "  share an agent with your own function tools - wrap a maps-only agent in AgentTool."
-echo "  See the README for the exact error message and the architecture."
+echo "  Next: build your agent. On a Gemini 3.x model, Grounding with Google Maps can share"
+echo "  one agent with your own function tools. On 2.5 or older it cannot - wrap a maps-only"
+echo "  agent in AgentTool. See the README for the exact error message and both architectures."
 echo

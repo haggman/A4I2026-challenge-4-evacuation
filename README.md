@@ -42,7 +42,7 @@ what each of you needs in the first fifteen minutes.
 
 | If you are… | Read now | Come back for |
 |---|---|---|
-| **Everyone, together** | [The four things](#the-four-things-youre-working-with) · [Three tracks](#three-tracks-one-architecture) · [What you're building](#what-youre-building) · [Pick your state](#now-pick-your-state) | — decide these before anyone opens a keyboard |
+| **Everyone, together** | [The four things](#the-four-things-youre-working-with) · [Three tracks](#three-tracks-one-architecture) · [What you're building](#what-youre-building) · [Pick your state](#now-pick-your-state) | Decide these before anyone opens a keyboard |
 | **Team lead** | [Step 0](#step-0organize-your-team) · [How you'll be judged](#how-youll-be-judged) | [Going further](#going-further)—read it *before* you write code, not before you demo |
 | **Data lane** | [Step 4, load the data](#step-4load-the-data) · [What you'll have](#what-youll-have) | [The data, and why we chose it](#the-data-and-why-we-chose-it) · Section 12 of the notebook |
 | **Agent lane** | [What you're building](#what-youre-building) · [The technology](#the-technology-youll-use) | [`agent/README.md`](agent/) · [Reference](#reference) |
@@ -53,7 +53,7 @@ what each of you needs in the first fifteen minutes.
 
 1. **Grounding with Google Maps cannot answer the question this challenge is about—at least not the
    way you will first ask it.** Ask which shelters in a county take a wheelchair and it cannot help.
-   Section 2 of the notebook shows you that in about ninety seconds, and the whole design follows
+   Section 2 of the notebook shows you that in a few minutes, and the whole design follows
    from it. There is a way to get considerably more out of it, and finding it is worth real credit.
 2. **Your agent must genuinely call Maps grounding and act on what comes back.** Naming it on a
    slide, or calling it once for decoration in a flow that would give the same answer without it, is
@@ -73,7 +73,7 @@ Small vocabulary, used consistently everywhere from here on. Worth thirty second
 | **Census tract** | A Census Bureau area of roughly 4,000 people. Small enough to act on, large enough that nobody in it is identifiable. Our unit for everything about **people** |
 | **Grounding** | Connecting a model to a live external source so its answer is anchored in something real rather than recalled. Your differentiator is one of these |
 | **Unrecorded** | A field nobody filled in. Distinct from a field that says "no", and **that distinction carries most of the meaning in this challenge** |
-| **EVAC / POST** | A shelter designated for use *before* landfall versus one for *after* impact. Different buildings, different job, and the federal file tells you which |
+| **EVAC / POST** | A shelter designated for use *before* landfall versus one for *after* impact. Different buildings, different job, and the federal file tells you which—it is the `usage` column in `shelters` |
 
 The whole challenge is: **a county, a season, and a plan that does not assume everyone can drive.**
 
@@ -104,10 +104,17 @@ spends Grounding with Google Maps on the one question the federal file cannot an
 building still there, and what is it now? Output: a ranked list of shelters to verify before the
 season, with a reason per row.
 
+One thing we did not pre-build: `shelters` carry a county but no tract id. To put a shelter on a
+hazard tract, either take the nearest `vulnerability_tracts` centroid by `ST_DISTANCE` (simple,
+approximate) or spatially join against the 2010-vintage geometry table and accept that a third of
+2020 tract ids will not match. Say which you did.
+
 **🚌 Getting people out** starts from `vulnerability_tracts`—`households_no_vehicle`,
 `pct_no_vehicle`, `pct_age_65_plus`, `pct_disability`, `mobile_homes`—and a spatial query against
 `shelters`, which for most teams is the first time they write `ST_DISTANCE`. Maps grounding earns its
-place here finding what is *near* a tract, not routing to it; routing is still Private Preview (see
+place here twice: finding what is *near* a tract, and—with `routing` added to `grounding_types`
+alongside `places`—returning the drive time to it, which is exactly the add-on that turns our
+straight-line distance into something a planner can use (see
 [the questions that need more](#questions-that-need-more-than-we-gave-you)). The strong version says
 plainly which transport measure it is quoting, because the two in the table measure different
 things. Output: the tracts where a pickup point or a para-transit run would do the most good, and why.
@@ -169,7 +176,7 @@ and having a judge find it reads as the opposite.
 
 | The question | What you'd need to add |
 |---|---|
-| *"How long does it take to drive there?"* | Routing through Grounding with Google Maps is Private Preview—we have straight-line distance only. Maps Grounding Lite's `compute_routes` closes it. See [Going further](#going-further) |
+| *"How long does it take to drive there?"* | Our tables carry straight-line distance only. Grounding with Google Maps closes it: add `routing` to `grounding_types` alongside `places` and the grounded call returns drive times and directions ([Routing—Find Directions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#routing-find-directions)). Maps Grounding Lite's `compute_routes` is the alternative. See [Going further](#going-further) |
 | *"Which assisted living facilities are in my county?"* | **No national public list exists.** Assisted living is state-regulated, so there is no federal roster—a real gap affecting exactly this population. Your state's licensing database, if it publishes one |
 | *"Where are the mobile home parks?"* | The national layer was decommissioned in 2025. We load ACS mobile-home counts per tract—density, not locations |
 | *"Which specific people need help?"* | Nothing. Individual-level data is prohibited at this event, and rightly. This is a line, not an obstacle |
@@ -273,8 +280,9 @@ agent will happily absorb. [Details in Step 3](#strongly-recommended-antigravity
 - **[MCP Toolbox for Databases](https://github.com/googleapis/mcp-toolbox)**—Google's open source
   MCP server for databases. Prebuilt tools plus a framework for defining your own.
 - **Maps Grounding Lite**—a Google-hosted MCP server at `https://mapstools.googleapis.com/mcp`
-  carrying `search_places`, `lookup_weather` and `compute_routes`. It is the only route to a real
-  travel time in this challenge, and it satisfies this requirement on its own.
+  carrying `search_places`, `lookup_weather` and `compute_routes`. It is one of two routes to a real
+  travel time in this challenge (the other is `routing` in Grounding with Google Maps itself), and
+  it satisfies this requirement on its own.
 
 **The Toolbox is generally more flexible.** If you want your agent's database access shaped to your
 own tools rather than generic queries, start there.
@@ -364,8 +372,8 @@ function-calling loop for you. ADK runs its own. It is noise.
 
 | Will | Will not |
 |---|---|
-| Find places, addresses, ratings, hours | Give you a driving time or a distance |
-| Tell you whether somewhere is open **right now** | Give you a route or a polyline |
+| Find places, addresses, ratings, hours | Give you a drive time unless `routing` is in `grounding_types` |
+| Tell you whether somewhere is open **right now** | Know anything in our tables—who lives nearby, wheelchair flags, generators |
 | Tell you a place has closed, or been renamed | Answer anything but English |
 | Say honestly when it does not know | Answer an *area* question about accessibility |
 
@@ -376,12 +384,15 @@ Iterating over your candidate shelters one at a time is slow, it is real, and al
 try it.
 
 Five to eight seconds per grounded call is normal, not a bug. Routing and Search Along Route are
-Private Preview—**do not design a deliverable around a route.**
+part of Grounding with Google Maps too—add `routing` to `grounding_types` and the same call returns
+drive times and directions ([Routing—Find Directions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#routing-find-directions)).
+It is newer than the rest of the feature, so if you build on it, test it at minute ten rather than
+minute two hundred.
 
 #### Attribution is a requirement, not a nicety
 
 Display the Google Maps sources **immediately after** the content they support, viewable within one
-user interaction. The words "Google Maps" must not be re-capitalised, restyled, wrapped across lines
+user interaction. The words "Google Maps" must not be re-capitalized, restyled, wrapped across lines
 or translated—set `translate="no"`.
 
 The response gives you `groundingChunks[].maps` with `place_id`, `title` and `uri`, and
@@ -421,8 +432,9 @@ looks like everyone else's, so read it before you write code rather than after.
 
 #### Data lane—2 to 3 people
 
-Running the notebook takes about ninety seconds, so that is emphatically *not* the job. This lane
-owns everything between raw tables and a readiness query the agent can call:
+Running the notebook takes a few minutes (the diagnostic cell at the bottom prints the exact figure)
+and rather longer to read, so that is emphatically *not* the job. This lane owns everything between
+raw tables and a readiness query the agent can call:
 
 - **Get the shelters-to-tracts distance query working, and hand it to the agent lane early.** They
   need the exact SQL their tool will wrap, and they are blocked until it exists. This is the
@@ -618,13 +630,16 @@ own. Review before you accept.
    ```
 
 4. Click **Import**, open the notebook, set `STATE` at the top, and run the cells top to bottom. It
-   takes about **ninety seconds** to run and rather longer to read.
+   takes a few minutes to run (the diagnostic cell at the bottom prints the exact figure) and rather
+   longer to read.
 
 **Read the text between the cells.** Several explanations will save you time later, and one of
 them—section 2, where the differentiator fails on purpose—is something judges will ask you about
 directly.
 
-**If the notebook won't run**, there's a headless fallback. From the repo root in Cloud Shell:
+**If the notebook won't run**, or a federal data server starts refusing the room (150 people hitting
+one endpoint in ten minutes looks like an attack to some of them), there's a headless fallback. The
+snapshot already has everything the notebook pulls. From the repo root in Cloud Shell:
 
 ```bash
 bash scripts/load.sh FL
@@ -634,7 +649,7 @@ bash scripts/load.sh FL
 bash scripts/load.sh --list       # every state we've published
 ```
 
-One asymmetry worth knowing. The notebook pulls live from six public publishers and teaches as it
+One asymmetry worth knowing. The notebook pulls live from seven public sources and teaches as it
 goes; `load.sh` restores the identical tables from a Cloud Storage snapshot and teaches nothing.
 Use the notebook if you can.
 
@@ -653,7 +668,7 @@ two describe places**, and that division is the shape of the whole problem:
 | `vulnerability_tracts` | People | One row per census tract—no-vehicle households, over-65 population, disability and mobility prevalence, mobile homes, group quarters |
 | `power_dependent_counties` | People | One row per county—residents relying on electricity for medical equipment, dialysis, oxygen |
 | `care_facilities` | People | Nursing homes with coordinates and certified bed counts—concentrations of people who cannot self-evacuate |
-| `shelters` | Places | Every registered shelter in your state, with capacity, accessibility, generator and surge flags, and the county we derived from its coordinates |
+| `shelters` | Places | Every registered shelter in your state that carries coordinates, with capacity, accessibility, generator and surge flags, and the county we derived from its coordinates |
 | `hazard_tracts` | Places | Hurricane and coastal-flood exposure and expected annual loss, per tract |
 
 ---
@@ -822,9 +837,14 @@ does that nobody else's will:
 - **Make distance mean something.** Twelve kilometers is not far. It is impassable for a household
   with no vehicle and merely inconvenient for one with two. An agent that knows the difference is
   doing the actual job.
-- **Get real travel times back.** Maps Grounding Lite's `compute_routes` returns distance *and*
-  duration. It needs an API key, and the [Maps Demo Key](https://developers.google.com/maps/demo-key)
-  covers it with no billing account and no credit card. It also satisfies your managed-MCP
+- **Get real travel times back.** Our tables carry straight-line distance only. The direct route is
+  Grounding with Google Maps itself: include `routing` in `grounding_types` alongside `places` and
+  the same grounded call returns drive times and directions—exactly the add-on that turns a
+  straight-line distance into something a planner can use. See
+  [Routing—Find Directions](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/grounding/grounding-with-google-maps#routing-find-directions)
+  in the docs. The alternative is Maps Grounding Lite's `compute_routes`, which returns distance
+  *and* duration, needs an API key (the [Maps Demo Key](https://developers.google.com/maps/demo-key)
+  covers it with no billing account and no credit card), and also satisfies your managed-MCP
   requirement.
 - **Change the hazard.** We pull FEMA NRI's hurricane and coastal-flood columns. The service
   publishes others. Swapping the prefix turns this into a wildfire or an ice-storm tool, and if you
@@ -910,7 +930,7 @@ notebooks/
 scripts/
   load.sh                             Headless fallback if Colab is unavailable
 data/                                 Empty. Everything lives in BigQuery, in your project
-agent/                                Empty. Your agent goes here
+agent/                                Your agent goes here. README.md restates the requirements
 ```
 
 `c4_90_publish_snapshot.ipynb` is for ROI maintainers: it regenerates the Cloud Storage snapshot
@@ -965,12 +985,12 @@ in your totals.
 **Bias handling.** Did you run the [equity audit](#what-auditing-the-outcome-actually-means)? Did
 you find the reporting bias we warned you about? Bring the numbers, not the intention.
 
-**Knowing what your system can't do.** Two thirds of the accessibility field is blank. Routing does
-not exist for you. emPOWER is county-level, so you can say how many but never which block. A team
-that volunteers its limitations shows more skill than one that oversells—and judges are told to
-reward it.
+**Knowing what your system can't do.** Two thirds of the accessibility field is blank. Our tables
+carry straight-line distance, not drive time. emPOWER is county-level, so you can say how many but
+never which block. A team that volunteers its limitations shows more skill than one that
+oversells—and judges are told to reward it.
 
-One warning worth internalising: **an agent that reports "no accessible shelters nearby" when it
+One warning worth internalizing: **an agent that reports "no accessible shelters nearby" when it
 means "nobody has assessed them" has stated a fact about paperwork as a fact about buildings.** That
 is a confident, plausible, wrong answer about vulnerable people, which is the worst output this
 domain can produce. A judge who asks "what does your agent say when the field is blank?" should get
@@ -1023,9 +1043,9 @@ them against a key.** They're asking whether you made the choice on purpose and 
 > ⚠️ **Grounding with Google Maps must not be used for emergency response.** Google's terms are
 > explicit: *"You won't use Grounding with Google Maps for high risk activities including emergency
 > response services."* This challenge is preparedness planning done weeks ahead, which is why it is
-> permitted—and the model enforces the line at runtime, so an agent prompted to dispatch help during
-> an active event will simply refuse and tell you to call 911. Keep your framing on the right side
-> of that boundary and you will never meet it.
+> permitted. In our testing the model enforced the line itself—prompted to dispatch help during an
+> active event, it refused and said to call 911. Do not rely on that; keep your framing on the right
+> side of the boundary and you will never meet it.
 
 ---
 
