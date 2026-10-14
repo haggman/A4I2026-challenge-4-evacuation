@@ -47,7 +47,7 @@ what each of you needs in the first fifteen minutes.
 | **Data lane** | [Step 4, load the data](#step-4load-the-data) · [What you'll have](#what-youll-have) | [The data, and why we chose it](#the-data-and-why-we-chose-it) · Section 12 of the notebook |
 | **Agent lane** | [What you're building](#what-youre-building) · [The technology](#the-technology-youll-use) | [`agent/README.md`](agent/) · [Reference](#reference) |
 | **Front end lane** | [Front end lane](#front-end-lane2-people) | [Your output artifact](#your-output-artifact-the-readiness-brief) · the attribution rules, which shape your UI |
-| **Story lane** | [What the data actually says](#what-the-data-actually-says) | [Your output artifact](#your-output-artifact-the-readiness-brief) · [The data](#the-data-and-why-we-chose-it)—what is measured and what is merely recorded, because you will be asked |
+| **Story lane** | [What the data actually says](#what-the-data-actually-says) | [Your output artifact](#your-output-artifact-the-readiness-brief) · [The data](#the-data-and-why-we-chose-it)—what is measured and what is merely recorded, because judges check |
 
 **Three things everybody should know by the end of hour one**, whatever lane you are in:
 
@@ -440,7 +440,7 @@ raw tables and a readiness query the agent can call:
   need the exact SQL their tool will wrap, and they are blocked until it exists. This is the
   equivalent of training a model in other challenges: an *input* to the agent, not a step 4.
 - **Decide what "reachable" means** and encode it. Ten kilometers is nothing with a car and
-  impassable without one. This is a modeling decision, it is yours, and you will be asked for it.
+  impassable without one. This is a modeling decision, it is yours, and judges look for it.
 - **Keep unrecorded separate from "no" all the way through.** If it collapses anywhere in your
   pipeline it will collapse in your agent's answers too.
 - **Read the WARN rows** the validation section prints. They are real defects in federal data and at
@@ -743,7 +743,7 @@ New York is not one-fifteenth as ready as California. **California fills in the 
 
 This file measures what states recorded, not what exists. **Any team that ranks states, counties or
 neighborhoods on these counts has measured bureaucracy and called it risk.** That is the same trap
-as using a demographic proxy for a physical cause, and a judge will ask you about it. The defensible
+as using a demographic proxy for a physical cause, and judges look for it. The defensible
 move is to treat *unrecorded* as its own category—visible, counted, and never silently folded into
 "no".
 
